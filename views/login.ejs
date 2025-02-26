@@ -1,12 +1,12 @@
 <%- include('partials/header'); -%>
 
-<form>
+<form method="POST" action="/login">
     <h2>Log in</h2>
     <label for="email">Email</label>
-    <input type="text" name="email" required>
+    <input type="text" id="email" name="email" required>
     <div class="email error"></div>
     <label for="password">Password</label>
-    <input type="password" name="password" required>
+    <input type="password" id="password" name="password" required>
     <div class="password error"></div>
     <button>Login</button>
 </form>
@@ -34,13 +34,16 @@
                 headers: {"Content-Type": "application/json"}
             });
             const data = await res.json();
-            console.log(data);
+            console.log("server response", data);
             if (data.errors) {
+                console.log("her kom den til");
                 emailError.textContent = data.errors.email;
                 passwordError.textContent = data.errors.password;
             }
             if (data.token) {
+                console.log("samme chunk som assign");
                 localStorage.setItem("token", data.token); //lager token i localstorage
+                
                 location.assign("/"); //omdirigerer til forsiden etter innlogging
             }
         }

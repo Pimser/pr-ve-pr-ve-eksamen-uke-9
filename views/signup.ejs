@@ -1,6 +1,6 @@
 <%- include('partials/header'); -%>
 
-<form>
+<form action="/signup" method="POST"> 
     <h2>Sign up</h2>
     <label for="email">Email</label>
     <input type="text" name="email" required>
@@ -8,7 +8,7 @@
     <label for="password">Password</label>
     <input type="password" name="password" required>
     <div class="password error"></div>
-    <button>Sign up</button>
+    <button type="submit">Sign up</button>
 </form>
 
 <script>
@@ -28,7 +28,7 @@
         const password = form.password.value;
 
         try {
-            const res = await fetch("/auth/signup", {
+            const res = await fetch("/signup", {
                 method: "POST",
                 body: JSON.stringify({email, password}),
                 headers: {"Content-Type": "application/json"}

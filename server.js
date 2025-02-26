@@ -2,15 +2,26 @@ require("dotenv").config(); // Henter miljøvariabler fra .env
 const { error } = require("console");
 const express = require("express");
 const mongoose = require("mongoose");
+
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middleware/auth");
+const cookieParser = require("cookie-parser");
 const protectedRoutes = require("./routes/protectedRoutes");
 
 const app = express();
 
-//middleware
+app.use(cookieParser()); //dette er for å lese cookies
 app.use(express.static("public"))
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Viktig for å håndtere form-data
+
+app.use(authMiddleware); //dette gjør slik at brukerdata blir tiljengelig i alle views.
+
+//middleware for å gjøre bruker tiljengelig i views.
+app.use((req, res, next) => {
+    res.locals.user = req.user || null;
+    next();
+});
 
 //view engine
 app.set("view engine", "ejs");
@@ -24,27 +35,18 @@ mongoose.connect(dbURI)
 .catch(err => console.error("en feil oppsto under database tilkobling", err));
 
 //autentisering med authRoutes for (signup & login)
-app.use("/auth", authRoutes);
+
 
 app.use("/protected", authMiddleware, protectedRoutes); //authmiddleware sjekker om brukeren er autentisert
 
 //routes
 app.get("/", (req, res) => {
-    res.render("home", { user: req.user || null }); // sender 'user' til home.ejs, fallback til null om ikke tilgjengelig
+    res.render("home"); 
 });
 
 
-app.get("/login", (req,res) => res.render("login", { user: req.user}));
-app.get("/signup", (req,res) => res.render("signup", { user: req.user}));
-app.get("/reinsdyrLog", (req,res) => {
-    res.render("reinsdyrLog", { user: req.user });
-});
 
-app.get("/logout", (req, res) => {
-    res.clearCookie("token"); // 
-    res.redirect("/"); // Omdiriger til hjem-siden etter logout
-});
-
+app.use(authRoutes);
 
 app.listen(PORT, () =>{
     console.log("server is running on http://localhost:5000");

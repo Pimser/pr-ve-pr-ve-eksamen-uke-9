@@ -1,21 +1,24 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-const authMiddleware = (rew, res, next) => {
-    const token = req.headers["authorization"]?.replace("Bearer ", "");
-
+const authMiddleware = async (req, res, next) => {
+    const token = req.cookies.jwt;
     if (!token) {
-        return res.status(401).json({ error: "Ingen token funnet!"});
+        req.user = null;
+        return next();
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;  //legger til brukerens id i request objektet
-        next(); //fortsetter til neste rute
-
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decodedToken.id);
+        req.user = user;  // Setter brukeren i req.user
+        res.locals.user = user;  // Gjør brukeren tilgjengelig i views
     } catch (err) {
-        res.status(401).json({ error: "Ugyldig token!" });
+        console.log(err);
+        req.user = null;
     }
-    
+
+    next();
 };
 
 module.exports = authMiddleware;
