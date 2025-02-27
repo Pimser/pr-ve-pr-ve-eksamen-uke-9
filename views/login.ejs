@@ -35,6 +35,7 @@
             });
             const data = await res.json();
             console.log("server response", data);
+            location.assign("/");
             if (data.errors) {
                 console.log("her kom den til");
                 emailError.textContent = data.errors.email;

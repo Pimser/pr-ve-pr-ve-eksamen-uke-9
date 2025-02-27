@@ -47,6 +47,16 @@ nav li a{
     letter-spacing: 2px;
 }
 
+#searchBar {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+}
+
+
 .btn {
     border-radius: 36px;
     background: #FEE996;

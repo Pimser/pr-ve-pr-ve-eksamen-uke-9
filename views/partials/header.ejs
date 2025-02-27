@@ -12,6 +12,7 @@
         <ul>
             <% if (user) { %>  
                 <li>Velkommen, <%= user.email %></li>
+                <input type="text" id="searchBar" placeholder="Søk..">
                 <li><a href="/logout" class="btn">Logg ut</a></li>
             <% } else { %>  
                 <li><a href="/login" class="btn">Log in</a></li>

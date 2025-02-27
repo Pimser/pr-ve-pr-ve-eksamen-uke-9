@@ -51,6 +51,10 @@ module.exports.reinsdyrLog_get = (req, res) => {
     res.render("reinsdyrLog", { user: req.user || null });
 }
 
+module.exports.prosjektSetup_get = (req, res) => {
+    res.render("prosjektSetup", { user: req.uder || null});
+}
+
 module.exports.logout_get = (req, res) => {
     res.clearCookie("jwt"); // Fjern JWT-cookie
     res.redirect("/"); // Omdiriger til forsiden
